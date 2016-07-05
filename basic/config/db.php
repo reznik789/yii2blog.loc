@@ -6,4 +6,5 @@ return [
     'username' => 'yii2blog',
     'password' => '111111',
     'charset' => 'utf8',
+    'tablePrefix' => 'test_',
 ];
