@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use yii\web\ForbiddenHttpException;
 
 /**
  * UsersController implements the CRUD actions for Users model.
@@ -35,8 +36,17 @@ class UsersController extends Controller
                         "allow" => true,
                         'actions' => ['update', 'delete'],
                         'roles' => ['@']
-                    ]
-                ]
+                    ]                    
+                ],
+                'denyCallback' => function($rule, $action) {
+                    if ($action->id == 'delete') {
+                        throw new ForbiddenHttpException('Only administrators can delete users.');
+                    } else {
+                        if (Yii::$app->user->isGuest) {
+                            Yii::$app->user->loginRequired();
+                        }
+                    }
+                }
             ],
         ];
     }
