@@ -43,9 +43,11 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
             [['about'], 'string'],
             [['username'], 'string', 'max' => 40],
             [['password', 'email'], 'string', 'max' => 100],
+            [['password'], 'string', 'min' => 6],
             [['first_name'], 'string', 'max' => 25],
             [['last_name'], 'string', 'max' => 30],
             [['authKey'], 'string', 'max' => 255],
+            [['username'] , 'unique'],
             [['user_role'], 'exist', 'skipOnError' => true, 'targetClass' => Roles::className(), 'targetAttribute' => ['user_role' => 'id']],
         ];
     }

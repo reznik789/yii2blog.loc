@@ -38,6 +38,7 @@ class Posts extends \yii\db\ActiveRecord
         return [
             [['title'], 'required'],
             [['anons', 'content', 'publish_status'], 'string'],
+            [['publish_status'], 'in', 'range' => ['publish', 'draft']],
             [['category_id', 'author_id'], 'integer'],
             [['publish_date'], 'safe'],
             [['title'], 'string', 'max' => 255],
