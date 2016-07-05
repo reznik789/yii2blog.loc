@@ -90,4 +90,14 @@ class Users extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Roles::className(), ['id' => 'user_role']);
     }
+
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            $this->password = \Yii::$app->security->generatePasswordHash($this->password, 10);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
