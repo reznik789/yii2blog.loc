@@ -34,13 +34,20 @@ class UsersController extends Controller
                 'rules' => [
                     [
                         "allow" => true,
-                        'actions' => ['update', 'delete'],
-                        'roles' => ['@']
-                    ]                    
-                ],
+                        'actions' => ['update'],
+                        'roles' => ['editor']
+                    ],
+                    [
+                        "allow" => true,
+                        'actions' => ['delete'],
+                        'roles' => ['admin']
+                    ]
+            ],
                 'denyCallback' => function($rule, $action) {
                     if ($action->id == 'delete') {
                         throw new ForbiddenHttpException('Only administrators can delete users.');
+                    } elseif ($action->id == 'update') {
+                        throw new ForbiddenHttpException('You have\'t permissions to update users.');
                     } else {
                         if (Yii::$app->user->isGuest) {
                             Yii::$app->user->loginRequired();
@@ -57,6 +64,11 @@ class UsersController extends Controller
      */
     public function actionIndex()
     {
+        if (Yii::$app->user->isGuest) {
+            Yii::$app->user->loginRequired();
+        } elseif (!Yii::$app->user->can('admin')){
+            throw new ForbiddenHttpException('Permission denied.');
+        }
         $searchModel = new UsersSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 

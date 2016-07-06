@@ -38,6 +38,9 @@ $config = [
                 'register' => 'users/create'
             ]
         ],
+        'authManager' => [
+            'class' => 'yii\rbac\PhpManager'
+        ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
