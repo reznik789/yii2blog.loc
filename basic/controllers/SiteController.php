@@ -8,6 +8,7 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use yii\web\ForbiddenHttpException;
 
 class SiteController extends Controller
 {
@@ -46,9 +47,23 @@ class SiteController extends Controller
             ],
         ];
     }
-
+    
+    public function actionBackend()
+    {
+        if (Yii::$app->user->isGuest) {
+            Yii::$app->user->loginRequired();
+        } elseif (!Yii::$app->user->can('admin')){
+            throw new ForbiddenHttpException('Permission denied.');
+        }
+        $this->layout = 'backend';
+        return $this->render('index');
+    }
+        
     public function actionIndex()
     {
+        if (!Yii::$app->user->isGuest){
+            $this->layout = 'registered_users';
+        }
         return $this->render('index');
     }
 
