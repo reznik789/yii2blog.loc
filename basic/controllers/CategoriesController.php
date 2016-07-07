@@ -6,6 +6,7 @@ use Yii;
 use app\models\Categories;
 use app\models\CategoriesSearch;
 use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -35,6 +36,10 @@ class CategoriesController extends Controller
      */
     public function actionIndex()
     {
+        if (Yii::$app->user->isGuest) {
+            Yii::$app->user->loginRequired();
+        } 
+        $this->layout = 'backend';
         $searchModel = new CategoriesSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -51,6 +56,12 @@ class CategoriesController extends Controller
      */
     public function actionView($id)
     {
+        if (Yii::$app->user->isGuest) {
+            Yii::$app->user->loginRequired();
+        } elseif (!Yii::$app->user->can('admin')){
+            throw new ForbiddenHttpException('Permission denied.');
+        }
+        $this->layout = 'backend';
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
@@ -63,8 +74,13 @@ class CategoriesController extends Controller
      */
     public function actionCreate()
     {
+        if (Yii::$app->user->isGuest) {
+            Yii::$app->user->loginRequired();
+        } elseif (!Yii::$app->user->can('admin')){
+            throw new ForbiddenHttpException('Permission denied.');
+        }
         $model = new Categories();
-
+        $this->layout = 'backend';
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
@@ -82,8 +98,13 @@ class CategoriesController extends Controller
      */
     public function actionUpdate($id)
     {
+        if (Yii::$app->user->isGuest) {
+            Yii::$app->user->loginRequired();
+        } elseif (!Yii::$app->user->can('admin')){
+            throw new ForbiddenHttpException('Permission denied.');
+        }
         $model = $this->findModel($id);
-
+        $this->layout = 'backend';
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
@@ -101,8 +122,13 @@ class CategoriesController extends Controller
      */
     public function actionDelete($id)
     {
+        if (Yii::$app->user->isGuest) {
+            Yii::$app->user->loginRequired();
+        } elseif (!Yii::$app->user->can('admin')){
+            throw new ForbiddenHttpException('Permission denied.');
+        }
         $this->findModel($id)->delete();
-
+        $this->layout = 'backend';
         return $this->redirect(['index']);
     }
 

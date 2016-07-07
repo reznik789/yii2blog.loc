@@ -36,8 +36,8 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 'register' => 'users/registration',
-                'backend' => 'site/backend',
-                'admin' => 'site/backend'
+                'backend' => 'admin/',
+                'admin' => 'admin/',
             ]
         ],
         'authManager' => [

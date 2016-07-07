@@ -16,7 +16,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
+        <?php if (Yii::$app->user->can('admin')) : ?>
         <?= Html::a('Create Categories', ['create'], ['class' => 'btn btn-success']) ?>
+        <?php endif;?>
     </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -24,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
+           // 'id',
             'title',
 
             ['class' => 'yii\grid\ActionColumn'],

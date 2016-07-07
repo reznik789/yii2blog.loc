@@ -28,7 +28,7 @@ AppAsset::register($this);
     <?php
     NavBar::begin([
         'brandLabel' => 'Admin tool',
-        'brandUrl' => Yii::$app->homeUrl,
+        'brandUrl' => ['/admin/'],
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
@@ -38,13 +38,18 @@ AppAsset::register($this);
         'items' => [
             ['label' => 'Home', 'url' => ['/site/index']],
             [
-                'label' => 'Register',
-                'url' => ['/register'],
-                'visible' => Yii::$app->user->isGuest
+                'label' => 'Categories',
+                'url' => ['/categories'],
+                'visible' => !Yii::$app->user->isGuest,
+            ],
+            [
+                'label' => 'Users',
+                'url' => ['/admin/users'],
+                'visible' => Yii::$app->user->can('admin')
             ],
             [
                 'label' => 'My Profile',
-                'url' => ['/users/view', 'id' => Yii::$app->user->id],
+                'url' => ['/users/view', 'id' => Yii::$app->user->id, 'admin'=>true],
                 'visible' => !Yii::$app->user->isGuest
             ],
             Yii::$app->user->isGuest ? (

@@ -10,7 +10,7 @@ use app\models\LoginForm;
 use app\models\ContactForm;
 use yii\web\ForbiddenHttpException;
 
-class SiteController extends Controller
+class AdminController extends Controller
 {
     public function behaviors()
     {
@@ -46,25 +46,23 @@ class SiteController extends Controller
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
         ];
-    }
+    }    
     
-//    public function actionBackend()
-//    {
-//        if (Yii::$app->user->isGuest) {
-//            Yii::$app->user->loginRequired();
-//        } elseif (!Yii::$app->user->can('admin')){
-//            throw new ForbiddenHttpException('Permission denied.');
-//        }
-//        $this->layout = 'backend';
-//        return $this->render('index');
-//    }
-        
     public function actionIndex()
     {
-        if (!Yii::$app->user->isGuest){
-            $this->layout = 'registered_users';
-        }
+        if (Yii::$app->user->isGuest) {
+            Yii::$app->user->loginRequired();
+        } 
+        $this->layout = 'backend';
         return $this->render('index');
+    }
+    
+    public function actionUsers()
+    {
+        if (Yii::$app->user->isGuest) {
+            Yii::$app->user->loginRequired();
+        }
+       return $this->redirect(['/users', 'admin' => true]);
     }
 
     public function actionLogin()

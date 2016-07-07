@@ -62,12 +62,15 @@ class UsersController extends Controller
      * Lists all Users models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($admin = false)
     {
         if (Yii::$app->user->isGuest) {
             Yii::$app->user->loginRequired();
         } elseif (!Yii::$app->user->can('admin')){
             throw new ForbiddenHttpException('Permission denied.');
+        }
+        if ($admin){
+            $this->layout = 'backend';
         }
         $searchModel = new UsersSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -83,16 +86,21 @@ class UsersController extends Controller
      * @param string $id
      * @return mixed
      */
-    public function actionView($id)
+    public function actionView($id, $admin = false)
     {
-        if (!Yii::$app->user->can('updateUser', ['profileId' => $id])) {
+        if (Yii::$app->user->isGuest){
+            Yii::$app->user->loginRequired();
+        } elseif (!Yii::$app->user->can('updateUser', ['profileId' => $id])) {
             throw new ForbiddenHttpException('Access denied');
         }
+        if ($admin){
+            $this->layout = 'backend';
+        }        
         if (!Yii::$app->user->can('admin')){
             return $this->render('ownProfile', [
                 'model' => $this->findModel($id),
             ]);
-        }
+        }        
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
