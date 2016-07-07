@@ -28,33 +28,33 @@ class UsersController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
-            'access' => [
-                'class' => AccessControl::className(),
-                'only'  => ['update', 'delete'],
-                'rules' => [
-                    [
-                        "allow" => true,
-                        'actions' => ['update'],
-                        'roles' => ['editor']
-                    ],
-                    [
-                        "allow" => true,
-                        'actions' => ['delete'],
-                        'roles' => ['admin']
-                    ]
-            ],
-                'denyCallback' => function($rule, $action) {
-                    if ($action->id == 'delete') {
-                        throw new ForbiddenHttpException('Only administrators can delete users.');
-                    } elseif ($action->id == 'update') {
-                        throw new ForbiddenHttpException('You have\'t permissions to update users.');
-                    } else {
-                        if (Yii::$app->user->isGuest) {
-                            Yii::$app->user->loginRequired();
-                        }
-                    }
-                }
-            ],
+//            'access' => [
+//                'class' => AccessControl::className(),
+//                'only'  => ['update', 'delete'],
+//                'rules' => [
+//                    [
+//                        "allow" => true,
+//                        'actions' => ['update'],
+//                        'roles' => ['editor']
+//                    ],
+//                    [
+//                        "allow" => true,
+//                        'actions' => ['delete'],
+//                        'roles' => ['admin']
+//                    ]
+//            ],
+//                'denyCallback' => function($rule, $action) {
+//                    if ($action->id == 'delete') {
+//                        throw new ForbiddenHttpException('Only administrators can delete users.');
+//                    } elseif ($action->id == 'update') {
+//                        throw new ForbiddenHttpException('You have\'t permissions to update users.');
+//                    } else {
+//                        if (Yii::$app->user->isGuest) {
+//                            Yii::$app->user->loginRequired();
+//                        }
+//                    }
+//                }
+//            ],
         ];
     }
 
@@ -85,6 +85,14 @@ class UsersController extends Controller
      */
     public function actionView($id)
     {
+        if (!Yii::$app->user->can('updateUser', ['profileId' => $id])) {
+            throw new ForbiddenHttpException('Access denied');
+        }
+        if (!Yii::$app->user->can('admin')){
+            return $this->render('ownProfile', [
+                'model' => $this->findModel($id),
+            ]);
+        }
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
@@ -98,6 +106,7 @@ class UsersController extends Controller
     public function actionCreate()
     {
         $model = new Users();
+        $model->hashPassword = true;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -105,6 +114,24 @@ class UsersController extends Controller
             return $this->render('create', [
                 'model' => $model,
             ]);
+        }
+    }
+
+    public function actionRegistration()
+    {
+        $model = new Users();
+        $model->hashPassword = true;
+
+        if (Yii::$app->user->isGuest){
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                return $this->render('registration', [
+                    'model' => $model,
+                ]);
+            }
+        } else {
+            return $this->actionView(Yii::$app->user->getId());
         }
     }
 
@@ -116,8 +143,20 @@ class UsersController extends Controller
      */
     public function actionUpdate($id)
     {
+        if (!Yii::$app->user->can('updateUser', ['profileId' => $id])) {
+            throw new ForbiddenHttpException('Access denied');
+        }
         $model = $this->findModel($id);
-
+        
+        if(!Yii::$app->user->can('admin')){
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                return $this->render('updateOwnProfile', [
+                    'model' => $model,
+                ]);
+            }
+        }
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {

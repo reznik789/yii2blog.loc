@@ -24,7 +24,8 @@ use yii\web\IdentityInterface;
  */
 class Users extends \yii\db\ActiveRecord implements IdentityInterface
 {
-    /**
+    public $hashPassword  = false;
+     /**
      * @inheritdoc
      */
     public static function tableName()
@@ -136,8 +137,12 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
 
     public function beforeSave($insert)
     {
+
         if (parent::beforeSave($insert)) {
-            $this->password = \Yii::$app->security->generatePasswordHash($this->password, 10);
+            if ($this->hashPassword) {
+                $this->password = \Yii::$app->security->generatePasswordHash($this->password, 10);
+            }
+            //$this->upload();
             return true;
         } else {
             return false;

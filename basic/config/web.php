@@ -35,7 +35,7 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'register' => 'users/create',
+                'register' => 'users/registration',
                 'backend' => 'site/backend',
                 'admin' => 'site/backend'
             ]

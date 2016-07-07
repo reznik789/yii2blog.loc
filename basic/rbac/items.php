@@ -10,19 +10,29 @@ return [
     ],
     'user' => [
         'type' => 1,
+        'children' => [
+            'updateOwnProfile',
+        ],
     ],
     'editor' => [
         'type' => 1,
         'children' => [
-            'updateUser',
             'user',
         ],
     ],
     'admin' => [
         'type' => 1,
         'children' => [
+            'updateUser',
             'deleteUser',
             'editor',
+        ],
+    ],
+    'updateOwnProfile' => [
+        'type' => 2,
+        'ruleName' => 'isProfileOwner',
+        'children' => [
+            'updateUser',
         ],
     ],
 ];
