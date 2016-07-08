@@ -4,6 +4,8 @@ namespace app\models;
 
 use Yii;
 use yii\web\IdentityInterface;
+use yii\web\NotAcceptableHttpException;
+
 
 /**
  * This is the model class for table "{{%users}}".
@@ -105,7 +107,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
 
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
+        throw new NotAcceptableHttpException('"findIdentityByAccessToken" is not implemented.');
     }
 
     public function getId()

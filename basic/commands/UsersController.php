@@ -10,6 +10,7 @@ namespace app\commands;
 
 
 
+//use app\rbac\PostRule;
 use app\rbac\ProfileRule;
 use yii\console\Controller;
 use \Yii;
@@ -67,4 +68,17 @@ class UsersController extends Controller
         $user = $auth->getRole('user');
         $auth->addChild($user, $updateOwnProfile);
     }
+    
+//    public function actionPostRule(){
+//        $auth = Yii::$app->authManager;
+//
+//        $rule = new PostRule();
+//        $auth->add($rule);
+//
+//        $updateOwnPost = $auth->createPermission('updateOwnPost');
+//        $updateOwnPost->ruleName = $rule->name;
+//        $auth->add($updateOwnPost);       
+//        $user = $auth->getRole('user');
+//        $auth->addChild($user, $updateOwnPost);
+//    }
 }

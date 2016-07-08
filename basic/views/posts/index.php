@@ -10,6 +10,7 @@ use app\models\Posts;
 
 $this->title = 'Posts';
 $this->params['breadcrumbs'][] = $this->title;
+Posts::find()->all();
 //$dataProvider = new ActiveDataProvider([
 //    'query' => Posts::find()->with('category', 'author')
 //]);
@@ -20,14 +21,15 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('Create Posts', ['create'], ['class' => 'btn btn-success']) ?>
+        <?php if(!Yii::$app->user->isGuest && !Yii::$app->user->can("editor")) : ?>
+       <?=  Html::a('Create Posts', ['create'], ['class' => 'btn btn-success']) ?>
+        <?php endif;?>
     </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
            // 'id',
             'title',
             'anons:ntext',
@@ -43,7 +45,34 @@ $this->params['breadcrumbs'][] = $this->title;
             'publish_status',
             'publish_date',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'buttons'=> [
+                    'update' => function($url, $model, $key) {
+                        $options = [
+                            'title' => Yii::t('yii', "Update"),
+                            'aria-label' => Yii::t('yii', "Update"),
+                            'data-pjax' => '0',
+                        ];
+                        return (Yii::$app->user->can('admin') ||Yii::$app->user->can('editor') ||
+                            Yii::$app->user->can('updateOwnPost', ['profileId' => $model->author_id ])) ?
+                            Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, $options) : '';
+                    },
+
+                    'delete' => function($url, $model, $key) {
+                        $options = [
+                            'title' => Yii::t('yii', "Delete"),
+                            'aria-label' => Yii::t('yii', "Delete"),
+                            'data-pjax' => '0',
+                            'data-method' => 'post',
+                        ];
+                        return (Yii::$app->user->can('admin') ||
+                            Yii::$app->user->can('updateOwnPost', ['profileId' => $model->author_id ])) ?
+                            Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, $options) : '';
+                    }
+
+                ]
+            ],
         ],
     ]); ?>
 </div>

@@ -12,6 +12,8 @@ return [
         'type' => 1,
         'children' => [
             'updateOwnProfile',
+            'updateOwnPost',
+            'canCreatePost',
         ],
     ],
     'editor' => [
@@ -34,5 +36,13 @@ return [
         'children' => [
             'updateUser',
         ],
+    ],
+    'updateOwnPost' => [
+        'type' => 2,
+        'ruleName' => 'isPostAuthor',
+    ],
+    'canCreatePost' => [
+        'type' => 2,
+        'ruleName' => 'canCreate',
     ],
 ];

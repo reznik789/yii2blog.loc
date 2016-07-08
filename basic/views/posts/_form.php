@@ -27,7 +27,7 @@ $items = ArrayHelper::map($categories,'id','title');
 
     <?= $form->field($model, 'publish_status')->dropDownList([ 'draft' => 'Draft', 'publish' => 'Publish', ]) ?>
 
-    <?= $form->field($model, 'publish_date')->textInput() ?>
+<!--    <?//= $form->field($model, 'publish_date')->textInput() ?>-->
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

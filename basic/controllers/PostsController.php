@@ -5,9 +5,11 @@ namespace app\controllers;
 use Yii;
 use app\models\Posts;
 use app\models\PostsSearch;
+use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\ForbiddenHttpException;
 
 /**
  * PostsController implements the CRUD actions for Posts model.
@@ -63,6 +65,14 @@ class PostsController extends Controller
      */
     public function actionCreate()
     {
+        if (Yii::$app->user->isGuest){
+            Yii::$app->user->loginRequired();
+        } elseif (!Yii::$app->user->can('canCreatePost', ['authorId' => Yii::$app->user->id])) {
+            throw new ForbiddenHttpException('Sorry you can create only 5 posts');
+        }
+        elseif (Yii::$app->user->can('editor')) {
+            throw new ForbiddenHttpException('Sorry you can create  posts');
+        }
         $model = new Posts();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -102,7 +112,6 @@ class PostsController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
         return $this->redirect(['index']);
     }
 
