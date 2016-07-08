@@ -2,10 +2,15 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use \app\models\Categories;
+use \yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Posts */
 /* @var $form yii\widgets\ActiveForm */
+
+$categories = Categories::find()->all();
+$items = ArrayHelper::map($categories,'id','title');
 ?>
 
 <div class="posts-form">
@@ -18,11 +23,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'content')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'category_id')->textInput() ?>
+    <?= $form->field($model, 'category_id')->dropDownList($items, ['prompt'=>'Chose category']) ?>
 
-    <?= $form->field($model, 'author_id')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'publish_status')->dropDownList([ 'draft' => 'Draft', 'publish' => 'Publish', ], ['prompt' => '']) ?>
+    <?= $form->field($model, 'publish_status')->dropDownList([ 'draft' => 'Draft', 'publish' => 'Publish', ]) ?>
 
     <?= $form->field($model, 'publish_date')->textInput() ?>
 

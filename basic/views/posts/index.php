@@ -2,13 +2,17 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
-
+use yii\data\ActiveDataProvider;
+use app\models\Posts;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\PostsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Posts';
 $this->params['breadcrumbs'][] = $this->title;
+//$dataProvider = new ActiveDataProvider([
+//    'query' => Posts::find()->with('category', 'author')
+//]);
 ?>
 <div class="posts-index">
 
@@ -28,8 +32,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'title',
             'anons:ntext',
             'content:ntext',
-            'category_id',
-            'author_id',
+            [
+                'label' => 'Category',
+                'value' => 'category.title',
+            ],
+            [
+                'label' => 'Author',
+                'value' => 'author.username',
+            ],
             'publish_status',
             'publish_date',
 

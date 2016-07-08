@@ -46,7 +46,7 @@ class AdminController extends Controller
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
         ];
-    }    
+    }
     
     public function actionIndex()
     {
@@ -69,7 +69,7 @@ class AdminController extends Controller
     {
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
-        } 
+        }
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
@@ -78,7 +78,7 @@ class AdminController extends Controller
             'model' => $model,
         ]);
     }
-    
+
     public function actionLogout()
     {
         Yii::$app->user->logout();
